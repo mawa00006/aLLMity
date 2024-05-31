@@ -34,12 +34,12 @@ def return_data():
     print(letter_type)
     print(patient_id)
 
-    arztbriefe, pflegedokumentation = get_data(patient_id, letter_type)
+    arztbriefe, pflegedokumentation = get_data(patient_id, letter_type, read_breaks=True)
 
     if letter_type=="pflege":
-        return "Ärztliche Dokumentation:\n\n"+arztbriefe+"\n\n\nPflegerische Dokumentation:\n\n"+pflegedokumentation
+        return "**Ärztliche Dokumentation:**\n\n"+arztbriefe+"\n\n\n**Pflegerische Dokumentation:**\n\n"+pflegedokumentation
     elif letter_type=="arzt":
-        return "Ärztliche Dokumentation:\n\n"+arztbriefe
+        return "**Ärztliche Dokumentation:**\n\n"+arztbriefe
     else:
         return "invalid type"
 

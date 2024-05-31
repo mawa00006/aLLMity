@@ -181,14 +181,14 @@
         document.getElementById('feature_1').addEventListener('click', function () {
             selectFeature(this);
             const outputField = document.getElementById('letter_output')
-            outputField.innerHTML = 'Nur Ärztliche Dokumentation.';
+            //outputField.innerHTML = 'Nur Ärztliche Dokumentation.';
             getData();
         });
 
         document.getElementById('feature_2').addEventListener('click', function () {
             selectFeature(this);
             const outputField = document.getElementById('letter_output')
-            outputField.innerHTML = 'Auch Pflegedokumentation.';
+            //outputField.innerHTML = 'Auch Pflegedokumentation.';
             getData();
         });
 
@@ -219,7 +219,7 @@
             fetch(`/getData?patient_id=${patientId}&type=${selectedFeature}`)
                 .then(response => response.text())
                 .then(data => {
-                    outputField.innerHTML = data;
+                    outputField.innerHTML = formatLetter(data);
                 })
                 .catch(error => {
                     outputField.innerHTML = 'An error occurred while loading the data.';
