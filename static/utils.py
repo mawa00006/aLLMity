@@ -71,9 +71,7 @@ def write_arztbrief(arzttexte, pflegetexte):
     # LLM befragen
     response = model.generate_content(prompt)
 
-    arztbrief = str(response._result.candidates[0].content.parts[0].text).replace(
-        "\n", ""
-    )
+    arztbrief = str(response._result.candidates[0].content.parts[0].text)
     print(arztbrief)
 
     return arztbrief
@@ -99,6 +97,7 @@ def wrap_text(text, width):
         lines.append(current_line)
 
     return lines
+
 
 def render_latex(arztbrief):
     geometry_options = {"tmargin": "4cm", "lmargin": "3cm", "rmargin": "3cm"}
