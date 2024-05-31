@@ -2,12 +2,14 @@ import codecs
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
+from pylatex import Document, Section
 
 load_dotenv()
 
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-pro')
+model = genai.GenerativeModel("gemini-1.5-pro")
+
 
 def get_data(patient_id, letter_type):
 
@@ -19,50 +21,89 @@ def get_data(patient_id, letter_type):
     if letter_type == "pflege":
         pflegedokumentation += read_pflegedokumentation(patient_id)
 
+    print("pflegedoku:", pflegedokumentation)
+
     return arztbriefe, pflegedokumentation
 
 
 def read_document2(filepath):
-    with open(filepath, 'r') as file:
-        data = file.read().replace('\n', '')
+    with open(filepath, "r") as file:
+        data = file.read().replace("\n", "")
 
     return data
 
+
 def read_document(filepath):
-    with codecs.open(filepath, 'r', encoding='utf-8') as file:
+    with codecs.open(filepath, "r", encoding="utf-8") as file:
 
         data = ""
         for line in file:
-            line = line.replace('\n', '').replace('\r', '')
+            line = line.replace("\n", "").replace("\r", "")
             data += line
 
     return data
+
 
 def read_arztbrief(patient_id):
     path = f"data/{patient_id}_arzt.txt"
     arztbriefe = read_document(path)
     return arztbriefe
 
+
 def read_pflegedokumentation(patient_id):
     path = f"data/{patient_id}_pflege.txt"
     pflegedokumentation = read_document(path)
     return pflegedokumentation
 
+
 def write_arztbrief(arzttexte, pflegetexte):
     persona = "Du bist ein Stationsarzt in einem Krankenhaus. Du sitzt in deinem Büro am Computer "
-    task = ("und du schreibst einen fachlichen Arztbrief auschließlich aus den folgenden Daten. Konzentriere dich dabei"
-            " auschließlich auf relevante ereignisse: ")
+    task = (
+        "und du schreibst einen fachlichen Arztbrief auschließlich aus den folgenden Daten. Konzentriere dich dabei"
+        " auschließlich auf relevante ereignisse: "
+    )
     context = " Arzttexte: " + arzttexte + " Pflegetexte: " + pflegetexte
 
-    format = "Format: gebe nicht diese zewichen aus: \n* , \n"
+    format = "Format: gebe nicht diese zeichen aus: \n* , \n"
 
     prompt = persona + task + context + format
 
     # LLM befragen
     response = model.generate_content(prompt)
-    print(response)
 
-    arztbrief = str(response._result.candidates[0].content.parts[0].text).replace('\n', '')
+    arztbrief = str(response._result.candidates[0].content.parts[0].text)
     print(arztbrief)
 
     return arztbrief
+
+
+# Function to wrap text
+def wrap_text(text, width):
+    words = text.split()
+    lines = []
+    current_line = ""
+
+    for word in words:
+        if len(current_line) + len(word) + 1 <= width:
+            if current_line:
+                current_line += " " + word
+            else:
+                current_line = word
+        else:
+            lines.append(current_line)
+            current_line = word
+
+    if current_line:
+        lines.append(current_line)
+
+    return lines
+
+
+def render_latex(arztbrief):
+    geometry_options = {"tmargin": "4cm", "lmargin": "3cm", "rmargin": "3cm"}
+    doc = Document(geometry_options=geometry_options)
+
+    with doc.create(Section("Arztbrief")):
+        doc.append(arztbrief)
+
+    doc.generate_pdf("full", clean_tex=False)
