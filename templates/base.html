@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor's Letter Generator</title>
+    <title>aLLMity - Arztbrief Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -84,9 +84,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>Doctor's Letter Generator</h1>
+        <h1>aLLMity - Arztbrief Generator</h1>
         <div class="form-group">
-            <label for="patient_id">Select Patient ID:</label>
+            <label for="patient_id">Patient auswählen:</label>
             <select id="patient_id">
                 <option value="P1a7192e68a9d8666">Patient P1a7192e68a9d8666</option>
                 <option value="2">Patient 2</option>
@@ -95,14 +95,17 @@
             </select>
         </div>
         <div class="form-group feature-container">
-            <div id="feature_1" class="feature-box" data-feature=0>Ärztliche Dokumentation</div>
-            <div id="feature_2" class="feature-box" data-feature=1>Ärztliche- und Pflegedokumentation</div>
+            <div id="feature_1" class="feature-box" data-feature="arzt">Ärztliche Dokumentation</div>
+            <div id="feature_2" class="feature-box" data-feature="pflege">Ärztliche- und Pflegedokumentation</div>
         </div>
         <div class="form-group">
-            <button id="generate_letter">Generate Doctor's Letter</button>
+            <button id="generate_letter">Arztbrief generieren</button>
         </div>
         <div class="form-group">
             <div id="letter_output" class="letter-output"></div>
+        </div>
+        <div class="form-group">
+            <button id="download_pdf">Download as PDF</button>
         </div>
     </div>
 
@@ -159,6 +162,26 @@
                 .replace(/\n\*/g, '')
                          .replace(/\n/g, '<br>');
         }
+
+                document.getElementById('download_pdf').addEventListener('click', function() {
+            const letterText = document.getElementById('letter_output').innerHTML;
+
+            // Create a form to send the letter text to the backend for PDF generation
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/download_pdf';
+            form.style.display = 'none';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'letter_text';
+            input.value = letterText;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+             });
     </script>
 </body>
 </html>
