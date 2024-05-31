@@ -1,9 +1,13 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, send_file, request
 import random
 import json
 import csv
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import io
 
 from static.utils import *
+
 
 # Create a Flask web application instance
 app = Flask(__name__)
@@ -40,6 +44,15 @@ def generate_letter():
     letter_content = letter
 
     return letter_content
+
+
+@app.route('/download_pdf', methods=['POST'])
+def download_pdf():
+    letter_text = request.form['letter_text']
+    render_latex(letter_text)
+    letter_path = "full.pdf"
+
+    return send_file(letter_path, as_attachment=True, download_name="doctor_letter.pdf", mimetype='application/pdf')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
