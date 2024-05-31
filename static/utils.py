@@ -2,6 +2,7 @@ import codecs
 import os
 import google.generativeai as genai
 from dotenv import load_dotenv
+from pylatex import Document, Section
 
 load_dotenv()
 
@@ -17,8 +18,10 @@ def get_data(patient_id, letter_type):
 
     arztbriefe = read_arztbrief(patient_id)
 
-    if letter_type == 1:
+    if letter_type == "pflege":
         pflegedokumentation += read_pflegedokumentation(patient_id)
+
+    print("pflegedoku:", pflegedokumentation)
 
     return arztbriefe, pflegedokumentation
 
@@ -67,7 +70,6 @@ def write_arztbrief(arzttexte, pflegetexte):
 
     # LLM befragen
     response = model.generate_content(prompt)
-    print(response)
 
     arztbrief = str(response._result.candidates[0].content.parts[0].text).replace(
         "\n", ""
@@ -75,3 +77,34 @@ def write_arztbrief(arzttexte, pflegetexte):
     print(arztbrief)
 
     return arztbrief
+
+
+# Function to wrap text
+def wrap_text(text, width):
+    words = text.split()
+    lines = []
+    current_line = ""
+
+    for word in words:
+        if len(current_line) + len(word) + 1 <= width:
+            if current_line:
+                current_line += " " + word
+            else:
+                current_line = word
+        else:
+            lines.append(current_line)
+            current_line = word
+
+    if current_line:
+        lines.append(current_line)
+
+    return lines
+
+def render_latex(arztbrief):
+    geometry_options = {"tmargin": "4cm", "lmargin": "3cm", "rmargin": "3cm"}
+    doc = Document(geometry_options=geometry_options)
+
+    with doc.create(Section("Arztbrief")):
+        doc.append(arztbrief)
+
+    doc.generate_pdf("full", clean_tex=False)
