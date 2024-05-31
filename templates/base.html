@@ -217,7 +217,7 @@
                     outputField.innerHTML = formatLetter(data);
                 })
                 .catch(error => {
-                    outputField.innerHTML = 'An error occurred while generating the letter.';
+                    outputField.innerHTML = 'An error occurred while generating the letter.'; outputField.innerHTML = `An error occurred while generating the letter for patient ID: ${patientId}.`;
                     console.error('Error:', error);
                 });
         }
