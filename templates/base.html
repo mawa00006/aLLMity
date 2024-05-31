@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor's Letter Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        button {
+            cursor: pointer;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .feature-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .feature-box {
+            width: 48%;
+            padding: 20px;
+            background-color: #e7e7e7;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .feature-box:hover, .feature-box.selected {
+            background-color: #d0d0d0;
+        }
+        .letter-output {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: left;
+            white-space: pre-wrap;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        .letter-output h2 {
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 1.5em;
+        }
+        .letter-output strong {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Doctor's Letter Generator</h1>
+        <div class="form-group">
+            <label for="patient_id">Select Patient ID:</label>
+            <select id="patient_id">
+                <option value="P1a7192e68a9d8666">Patient P1a7192e68a9d8666</option>
+                <option value="2">Patient 2</option>
+                <option value="3">Patient 3</option>
+                <!-- Add more options as needed -->
+            </select>
+        </div>
+        <div class="form-group feature-container">
+            <div id="feature_1" class="feature-box" data-feature=0>Ärztliche Dokumentation</div>
+            <div id="feature_2" class="feature-box" data-feature=1>Ärztliche- und Pflegedokumentation</div>
+        </div>
+        <div class="form-group">
+            <button id="generate_letter">Generate Doctor's Letter</button>
+        </div>
+        <div class="form-group">
+            <div id="letter_output" class="letter-output"></div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFeature = '';
+
+        document.getElementById('feature_1').addEventListener('click', function() {
+            selectFeature(this);
+        });
+
+        document.getElementById('feature_2').addEventListener('click', function() {
+            selectFeature(this);
+        });
+
+        function selectFeature(element) {
+            // Deselect any previously selected feature
+            const features = document.querySelectorAll('.feature-box');
+            features.forEach(feature => feature.classList.remove('selected'));
+
+            // Select the clicked feature
+            element.classList.add('selected');
+            selectedFeature = element.getAttribute('data-feature');
+        }
+
+        document.getElementById('generate_letter').addEventListener('click', function() {
+            if (selectedFeature) {
+                generateLetter();
+            } else {
+                alert('Please select a feature before generating the letter.');
+            }
+        });
+
+        function generateLetter() {
+            const patientId = document.getElementById('patient_id').value;
+            const outputField = document.getElementById('letter_output');
+
+            // Simulate fetching doctor's letter from the backend
+            fetch(`/generate_letter?patient_id=${patientId}&type=${selectedFeature}`)
+                .then(response => response.text())
+                .then(data => {
+                    outputField.innerHTML = formatLetter(data);
+                })
+                .catch(error => {
+                    outputField.innerHTML = 'An error occurred while generating the letter.';
+                    console.error('Error:', error);
+                });
+        }
+
+        function formatLetter(letter) {
+            // This function formats the letter to include basic HTML tags for better readability
+            return letter.replace(/## Arztbrief/g, '<h2>Arztbrief</h2>')
+                         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                         .replace(/\n\n/g, '<br><br>')
+                .replace(/\n\*/g, '')
+                         .replace(/\n/g, '<br>');
+        }
+    </script>
+</body>
+</html>
