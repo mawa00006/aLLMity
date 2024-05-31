@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor's Letter Generator</title>
+    <title>aLLMity - Arztbrief Generator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +17,9 @@
         }
         .container {
             width: 100%;
-            max-width: 600px;
+            height: 100%;
+            max-width: 1500px;
+            max-height: 1000px;
             background: white;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -37,13 +39,13 @@
         }
         button {
             cursor: pointer;
-            background-color: #007BFF;
+            background-color: #8ac69b;
             color: white;
             border: none;
             transition: background-color 0.3s ease;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #8AC69b;
         }
         .feature-container {
             display: flex;
@@ -60,6 +62,13 @@
         }
         .feature-box:hover, .feature-box.selected {
             background-color: #d0d0d0;
+        }
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+            height: auto;
         }
         .letter-output {
             background: #f9f9f9;
@@ -84,9 +93,10 @@
 </head>
 <body>
     <div class="container">
-        <h1>Doctor's Letter Generator</h1>
+        <img src="/static/Bildschirmfoto_2024-05-31_um_00.20.30-removebg-preview.png" alt="Logo" class="logo">
+        <h1>aLLMity - Arztbrief Generator</h1>
         <div class="form-group">
-            <label for="patient_id">Select Patient ID:</label>
+            <label for="patient_id">Patient auswählen:</label>
             <select id="patient_id">
                 <option value="P0621289588d63559">Patient P0621289588d63559</option>
                 <option value="P166133d60e99004f">Patient P166133d60e99004f</option>
@@ -134,14 +144,17 @@
             </select>
         </div>
         <div class="form-group feature-container">
-            <div id="feature_1" class="feature-box" data-feature=0>Ärztliche Dokumentation</div>
-            <div id="feature_2" class="feature-box" data-feature=1>Ärztliche- und Pflegedokumentation</div>
+            <div id="feature_1" class="feature-box" data-feature="arzt">Ärztliche Dokumentation</div>
+            <div id="feature_2" class="feature-box" data-feature="pflege">Ärztliche- und Pflegedokumentation</div>
         </div>
         <div class="form-group">
-            <button id="generate_letter">Generate Doctor's Letter</button>
+            <button id="generate_letter">Arztbrief generieren</button>
         </div>
         <div class="form-group">
             <div id="letter_output" class="letter-output"></div>
+        </div>
+        <div class="form-group">
+            <button id="download_pdf">Download as PDF</button>
         </div>
     </div>
 
@@ -200,6 +213,26 @@
                 .replace(/\n\*/g, '')
                          .replace(/\n/g, '<br>');
         }
+
+                document.getElementById('download_pdf').addEventListener('click', function() {
+            const letterText = document.getElementById('letter_output').innerHTML;
+
+            // Create a form to send the letter text to the backend for PDF generation
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/download_pdf';
+            form.style.display = 'none';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'letter_text';
+            input.value = letterText;
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
+             });
     </script>
 </body>
 </html>
