@@ -181,6 +181,8 @@
 
         document.getElementById('generate_letter').addEventListener('click', function() {
             if (selectedFeature) {
+                const outputField = document.getElementById('letter_output')
+                outputField.innerHTML = 'Loading ...';
                 generateLetter();
             } else {
                 alert('Please select a feature before generating the letter.');

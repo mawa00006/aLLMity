@@ -39,7 +39,6 @@ def generate_letter():
 
     letter = write_arztbrief(arztbriefe, pflegedokumentation)
 
-
     # Logic to generate the doctor's letter based on patient_id and letter_type
     letter_content = letter
 

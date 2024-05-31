@@ -64,8 +64,8 @@ def write_arztbrief(arzttexte, pflegetexte):
     # LLM befragen
     response = model.generate_content(prompt)
 
-    arztbrief = str(response._result.candidates[0].content.parts[0]).replace('\n', '')
-
+    arztbrief = str(response._result.candidates[0].content.parts[0].text).replace('\n', '')
+    print(arztbrief)
 
     return arztbrief
 
