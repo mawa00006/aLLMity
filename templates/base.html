@@ -163,10 +163,16 @@
 
         document.getElementById('feature_1').addEventListener('click', function() {
             selectFeature(this);
+            const outputField = document.getElementById('letter_output')
+            outputField.innerHTML = 'Nur Ärztliche Dokumentation.';
+            getData();
         });
 
         document.getElementById('feature_2').addEventListener('click', function() {
             selectFeature(this);
+            const outputField = document.getElementById('letter_output')
+            outputField.innerHTML = 'Auch Pflegedokumentation.';
+            getData();
         });
 
         function selectFeature(element) {
@@ -188,6 +194,21 @@
                 alert('Please select a feature before generating the letter.');
             }
         });
+
+        function getData() {
+            const patientId = document.getElementById('patient_id').value;
+            const outputField = document.getElementById('letter_output');
+
+            fetch(`/getData?patient_id=${patientId}&type=${selectedFeature}`)
+                .then(response => response.text())
+                .then(data => {
+                    outputField.innerHTML = data;
+                })
+                .catch(error => {
+                    outputField.innerHTML = 'An error occurred while loading the data.';
+                    console.error('Error:', error);
+                });
+        }
 
         function generateLetter() {
             const patientId = document.getElementById('patient_id').value;
