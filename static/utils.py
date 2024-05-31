@@ -69,6 +69,9 @@ def write_arztbrief(arzttexte, pflegetexte):
     response = model.generate_content(prompt)
     print(response)
 
-    arztbrief = str(response._result.candidates[0].content.parts[0].text)
+    arztbrief = str(response._result.candidates[0].content.parts[0].text).replace(
+        "\n", ""
+    )
+    print(arztbrief)
 
     return arztbrief
