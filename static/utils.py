@@ -1,7 +1,11 @@
 import codecs
 import os
 import google.generativeai as genai
-GOOGLE_API_KEY = "AIzaSyDCWi33umYkREk9hxYFJqafYkaA42qxPZk"
+from dotenv import load_dotenv
+
+load_dotenv()
+
+GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
@@ -17,12 +21,6 @@ def get_data(patient_id, letter_type):
 
     return arztbriefe, pflegedokumentation
 
-
-def read_document2(filepath):
-    with open(filepath, 'r') as file:
-        data = file.read().replace('\n', '')
-
-    return data
 
 def read_document(filepath):
     with codecs.open(filepath, 'r', encoding='utf-8') as file:
@@ -45,20 +43,24 @@ def read_pflegedokumentation(patient_id):
     return pflegedokumentation
 
 def write_arztbrief(arzttexte, pflegetexte):
+
+    prompt = ("Sie sind ein Assistenzarzt in einem Krankenhaus und müssen einen medizinischen entlassbrief schreiben in dem"
+              " alle medizinisch relevanten vorkommnisse in einem zusammenhängenden fließtext dargestellt werden. ")
     persona = "Du bist ein Stationsarzt in einem Krankenhaus. Du sitzt in deinem Büro am Computer "
     task = ("und du schreibst einen fachlichen Arztbrief auschließlich aus den folgenden Daten. Konzentriere dich dabei"
             " auschließlich auf relevante ereignisse: ")
     context = " Arzttexte: " + arzttexte + " Pflegetexte: " + pflegetexte
 
-    format = "Format: gebe nicht diese zewichen aus: \n* , \n"
+    format = ""
 
     prompt = persona + task + context + format
+
 
     # LLM befragen
     response = model.generate_content(prompt)
     print(response)
 
-    arztbrief = str(response._result.candidates[0].content.parts[0]).replace('\n', '')
-
+    arztbrief = str(response._result.candidates[0].content.parts[0])
+    arztbrief = arztbrief
 
     return arztbrief
