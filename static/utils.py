@@ -14,22 +14,22 @@ genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel("gemini-1.5-pro")
 
 
-def get_data(patient_id, letter_type):
+def get_data(patient_id, letter_type, read_breaks=False):
 
     arztbriefe = ""
     pflegedokumentation = ""
 
-    arztbriefe = read_arztbrief(patient_id)
+    arztbriefe = read_arztbrief(patient_id, read_breaks)
 
     if letter_type == "pflege":
-        pflegedokumentation += read_pflegedokumentation(patient_id)
-        print("pflegedoku:", pflegedokumentation)
+        pflegedokumentation += read_pflegedokumentation(patient_id, read_breaks)
+        # print("pflege:", pflegedokumentation)
 
     return arztbriefe, pflegedokumentation
 
 
 def read_document2(filepath):
-    with open(filepath, "r") as file:
+    with codecs.open(filepath, "r", encoding="utf-8") as file:
         data = file.read().replace("\n", "")
 
     return data
@@ -46,15 +46,22 @@ def read_document(filepath):
     return data
 
 
-def read_arztbrief(patient_id):
+def read_arztbrief(patient_id, read_breaks=False):
     path = f"data/{patient_id}_arzt.txt"
-    arztbriefe = read_document(path)
+
+    if read_breaks:
+        arztbriefe = read_document2(path)
+    else:
+        arztbriefe = read_document(path)
     return arztbriefe
 
 
-def read_pflegedokumentation(patient_id):
+def read_pflegedokumentation(patient_id, read_breaks=False):
     path = f"data/{patient_id}_pflege.txt"
-    pflegedokumentation = read_document(path)
+    if read_breaks:
+        pflegedokumentation = read_document2(path)
+    else:
+        pflegedokumentation = read_document(path)
     return pflegedokumentation
 
 

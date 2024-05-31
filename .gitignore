@@ -2,3 +2,9 @@ venv/
 data/
 .env
 *__pycache__*
+full.aux
+full.fdb_latexmk
+full.fls
+full.log
+full.pdf
+full.tex
