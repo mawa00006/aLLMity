@@ -26,6 +26,22 @@ def index():
 def base():
     return render_template("base.html")
 
+@app.route('/getData', methods=['GET'])
+def return_data():
+    patient_id = request.args.get('patient_id')
+    letter_type = request.args.get('type')
+
+    print(letter_type)
+    print(patient_id)
+
+    arztbriefe, pflegedokumentation = get_data(patient_id, letter_type)
+
+    if letter_type=="pflege":
+        return "Ärztliche Dokumentation:\n\n"+arztbriefe+"\n\n\nPflegerische Dokumentation:\n\n"+pflegedokumentation
+    elif letter_type=="arzt":
+        return "Ärztliche Dokumentation:\n\n"+arztbriefe
+    else:
+        return "invalid type"
 
 @app.route("/generate_letter", methods=["GET"])
 def generate_letter():
