@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,26 +16,32 @@
             height: 100vh;
             background-color: #f4f4f4;
         }
+
         .container {
             width: 100%;
             max-width: 600px;
             background: white;
             padding: 20px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         label {
             display: block;
             margin-bottom: 5px;
         }
-        select, button {
+
+        select,
+        button {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
         }
+
         button {
             cursor: pointer;
             background-color: #007BFF;
@@ -42,14 +49,17 @@
             border: none;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         .feature-container {
             display: flex;
             justify-content: space-between;
             margin-bottom: 15px;
         }
+
         .feature-box {
             width: 48%;
             padding: 20px;
@@ -58,9 +68,12 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        .feature-box:hover, .feature-box.selected {
+
+        .feature-box:hover,
+        .feature-box.selected {
             background-color: #d0d0d0;
         }
+
         .letter-output {
             background: #f9f9f9;
             border: 1px solid #ddd;
@@ -71,17 +84,20 @@
             height: 300px;
             overflow-y: scroll;
         }
+
         .letter-output h2 {
             text-align: center;
             text-transform: uppercase;
             font-size: 1.5em;
         }
+
         .letter-output strong {
             display: block;
             margin-top: 10px;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Doctor's Letter Generator</h1>
@@ -148,11 +164,11 @@
     <script>
         let selectedFeature = '';
 
-        document.getElementById('feature_1').addEventListener('click', function() {
+        document.getElementById('feature_1').addEventListener('click', function () {
             selectFeature(this);
         });
 
-        document.getElementById('feature_2').addEventListener('click', function() {
+        document.getElementById('feature_2').addEventListener('click', function () {
             selectFeature(this);
         });
 
@@ -166,7 +182,7 @@
             selectedFeature = element.getAttribute('data-feature');
         }
 
-        document.getElementById('generate_letter').addEventListener('click', function() {
+        document.getElementById('generate_letter').addEventListener('click', function () {
             if (selectedFeature) {
                 generateLetter();
             } else {
@@ -185,19 +201,17 @@
                     outputField.innerHTML = formatLetter(data);
                 })
                 .catch(error => {
-                    outputField.innerHTML = 'An error occurred while generating the letter.';
+                    outputField.innerHTML = 'An error occurred while generating the letter for ${patientId}.';
                     console.error('Error:', error);
                 });
         }
-
         function formatLetter(letter) {
             // This function formats the letter to include basic HTML tags for better readability
-            return letter.replace(/## Arztbrief/g, '<h2>Arztbrief</h2>')
-                         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                         .replace(/\n\n/g, '<br><br>')
-                .replace(/\n\*/g, '')
-                         .replace(/\n/g, '<br>');
+            return letter.replace(/\*\*([^*]+)\*\*/g, '<h4>$1</h4>').replace(/^## \s*(.+)$/gm, '<h2>$1</h2>');
+
         }
+
     </script>
 </body>
+
 </html>

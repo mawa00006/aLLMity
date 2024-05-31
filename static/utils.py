@@ -5,9 +5,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=GOOGLE_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-pro')
+model = genai.GenerativeModel("gemini-1.5-pro")
+
 
 def get_data(patient_id, letter_type):
 
@@ -23,38 +24,44 @@ def get_data(patient_id, letter_type):
 
 
 def read_document2(filepath):
-    with open(filepath, 'r') as file:
-        data = file.read().replace('\n', '')
+    with open(filepath, "r") as file:
+        data = file.read().replace("\n", "")
 
     return data
 
+
 def read_document(filepath):
-    with codecs.open(filepath, 'r', encoding='utf-8') as file:
+    with codecs.open(filepath, "r", encoding="utf-8") as file:
 
         data = ""
         for line in file:
-            line = line.replace('\n', '').replace('\r', '')
+            line = line.replace("\n", "").replace("\r", "")
             data += line
 
     return data
+
 
 def read_arztbrief(patient_id):
     path = f"data/{patient_id}_arzt.txt"
     arztbriefe = read_document(path)
     return arztbriefe
 
+
 def read_pflegedokumentation(patient_id):
     path = f"data/{patient_id}_pflege.txt"
     pflegedokumentation = read_document(path)
     return pflegedokumentation
 
+
 def write_arztbrief(arzttexte, pflegetexte):
     persona = "Du bist ein Stationsarzt in einem Krankenhaus. Du sitzt in deinem Büro am Computer "
-    task = ("und du schreibst einen fachlichen Arztbrief auschließlich aus den folgenden Daten. Konzentriere dich dabei"
-            " auschließlich auf relevante ereignisse: ")
+    task = (
+        "und du schreibst einen fachlichen Arztbrief auschließlich aus den folgenden Daten. Konzentriere dich dabei"
+        " auschließlich auf relevante ereignisse und teile deinen text in wenige Abschnitte ein: "
+    )
     context = " Arzttexte: " + arzttexte + " Pflegetexte: " + pflegetexte
 
-    format = "Format: gebe nicht diese zewichen aus: \n* , \n"
+    format = "Format: gebe nicht diese zeichen aus: \n* , \n"
 
     prompt = persona + task + context + format
 
@@ -62,7 +69,6 @@ def write_arztbrief(arzttexte, pflegetexte):
     response = model.generate_content(prompt)
     print(response)
 
-    arztbrief = str(response._result.candidates[0].content.parts[0]).replace('\n', '')
-
+    arztbrief = str(response._result.candidates[0].content.parts[0].text)
 
     return arztbrief
