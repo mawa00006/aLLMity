@@ -20,8 +20,7 @@ def get_data(patient_id, letter_type):
 
     if letter_type == "pflege":
         pflegedokumentation += read_pflegedokumentation(patient_id)
-
-    print("pflegedoku:", pflegedokumentation)
+        print("pflegedoku:", pflegedokumentation)
 
     return arztbriefe, pflegedokumentation
 
