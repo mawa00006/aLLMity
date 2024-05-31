@@ -57,7 +57,7 @@ def write_arztbrief(arzttexte, pflegetexte):
     persona = "Du bist ein Stationsarzt in einem Krankenhaus. Du sitzt in deinem Büro am Computer "
     task = (
         "und du schreibst einen fachlichen Arztbrief auschließlich aus den folgenden Daten. Konzentriere dich dabei"
-        " auschließlich auf relevante ereignisse und teile deinen text in wenige Abschnitte ein: "
+        " auschließlich auf relevante ereignisse: "
     )
     context = " Arzttexte: " + arzttexte + " Pflegetexte: " + pflegetexte
 
