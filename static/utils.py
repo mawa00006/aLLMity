@@ -3,6 +3,9 @@ import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 from pylatex import Document, Section
+import markdown2
+from html2text import HTML2Text
+
 
 load_dotenv()
 
@@ -107,3 +110,19 @@ def render_latex(arztbrief):
         doc.append(arztbrief)
 
     doc.generate_pdf("full", clean_tex=False)
+
+
+def markdown_to_latex(markdown_string):
+    # Convert Markdown to HTML
+    html_string = markdown2.markdown(markdown_string)
+
+    # Initialize HTML2Text
+    h = HTML2Text()
+    h.ignore_links = True
+    h.ignore_images = True
+    h.body_width = 0  # To avoid text wrapping
+
+    # Convert HTML to LaTeX
+    latex_string = h.handle(html_string)
+
+    return latex_string

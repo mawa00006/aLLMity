@@ -48,6 +48,7 @@ def generate_letter():
 @app.route("/download_pdf", methods=["POST"])
 def download_pdf():
     letter_text = request.form["letter_text"]
+    letter_text = markdown_to_latex(letter_text)
     render_latex(letter_text)
     letter_path = "full.pdf"
 
