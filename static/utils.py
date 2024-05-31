@@ -1,7 +1,11 @@
 import codecs
 import os
 import google.generativeai as genai
-genai.configure(api_key=GOOGLE_API_KEY)
+from dotenv import load_dotenv
+
+load_dotenv()
+
+genai.configure(api_key=os.environ["GOOGLE_API_KEY"])
 model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 def get_data(patient_id, letter_type):
